@@ -23,9 +23,9 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IEnumerable<Policy>> Get()
         {
-            return Ok(_policyRepository.GetPolicies());
+            throw new NotImplementedException();
         }
     }
 }
