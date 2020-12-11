@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InsuranceApi.Domain
+namespace InsuranceApi.Domain.Interfaces
 {
-    public interface IPolicyRepository
+    public interface IClientRepository
     {
-        public Task<IEnumerable<Policy>> GetPolicies();
+        public Task<IEnumerable<Client>> GetClients();
     }
 }

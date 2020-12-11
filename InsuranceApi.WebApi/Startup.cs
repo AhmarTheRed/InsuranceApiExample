@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using InsuranceApi.Domain;
+using InsuranceApi.Domain.Interfaces;
 using InsuranceApi.FakeOperations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,7 +35,9 @@ namespace InsuranceApi.WebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "InsuranceApi.WebApi", Version = "v1" });
             });
 
-            services.AddTransient<IPolicyRepository, FakePolicyRepository>();
+            services
+                .AddTransient<IClientRepository, FakeClientRepository>()
+                .AddTransient<IPolicyRepository, FakePolicyRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
