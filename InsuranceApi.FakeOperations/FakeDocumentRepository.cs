@@ -27,7 +27,7 @@ namespace InsuranceApi.FakeOperations
 
         public async Task<Document> GetDocument(Guid Id)
         {
-            new Document
+            return new Document
             {
                 Id = Id,
                 Title = "Policy Certificate",
