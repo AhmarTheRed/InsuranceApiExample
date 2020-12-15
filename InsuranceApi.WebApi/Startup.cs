@@ -37,7 +37,9 @@ namespace InsuranceApi.WebApi
 
             services
                 .AddTransient<IClientRepository, FakeClientRepository>()
-                .AddTransient<IPolicyRepository, FakePolicyRepository>();
+                .AddTransient<IPolicyRepository, FakePolicyRepository>()
+                .AddTransient<IClaimRepository, FakeClaimRepository>()
+                .AddTransient<IDocumentRepository, FakeDocumentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
