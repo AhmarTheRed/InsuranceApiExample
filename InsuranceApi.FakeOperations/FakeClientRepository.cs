@@ -16,17 +16,17 @@ namespace InsuranceApi.FakeOperations
             {
                 new Client
                 {
-                    Reference = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Name = "International Rescue"
                 },
                 new Client
                 {
-                    Reference = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Name = "EFSF"
                 },
                 new Client
                 {
-                    Reference = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Name = "Acme Inc"
                 }
             };

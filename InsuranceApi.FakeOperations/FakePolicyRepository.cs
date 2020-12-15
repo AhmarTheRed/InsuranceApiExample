@@ -8,28 +8,28 @@ namespace InsuranceApi.FakeOperations
 {
     public class FakePolicyRepository : IPolicyRepository
     {
-        public async Task<IEnumerable<Policy>> GetPolicies()
+        public async Task<IEnumerable<Policy>> GetPolicies(Guid clientId)
         {
             return new List<Policy>
             {
                 new Policy
                 {
-                    Reference = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Type = "Cyber"
                 },
                 new Policy
                 {
-                    Reference = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Type = "Employee Public Liability"
                 },
                 new Policy
                 {
-                    Reference = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Type = "Cyber"
                 },
                 new Policy
                 {
-                    Reference = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Type = "Motor"
                 }
             };

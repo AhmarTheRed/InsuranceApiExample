@@ -4,7 +4,7 @@ namespace InsuranceApi.Domain
 {
     public class Policy
     {
-        public Guid Reference { get; init; }
+        public Guid Id { get; init; }
 
         public string Type { get; init; }
     }

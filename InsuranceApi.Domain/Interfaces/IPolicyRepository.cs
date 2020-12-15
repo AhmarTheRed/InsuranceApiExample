@@ -8,6 +8,6 @@ namespace InsuranceApi.Domain.Interfaces
 {
     public interface IPolicyRepository
     {
-        public Task<IEnumerable<Policy>> GetPolicies();
+        public Task<IEnumerable<Policy>> GetPolicies(Guid clientId);
     }
 }
