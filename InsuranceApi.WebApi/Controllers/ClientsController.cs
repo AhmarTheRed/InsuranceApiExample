@@ -10,8 +10,9 @@ using InsuranceApi.Domain;
 
 namespace InsuranceApi.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/clients")]
     [ApiController]
+    
     public class ClientsController : ControllerBase
     {
         private readonly ILogger<ClientsController> _logger;
@@ -24,9 +25,59 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Client>> Get()
+        public async Task<IActionResult> Get()
         {
-            return await _clientRepository.GetClients();
+            return Ok(await _clientRepository.GetClients());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var client = await _clientRepository.GetClient(id);
+
+            if (client == null) return NotFound();
+
+            return Ok(client);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] Client client)
+        {
+            if (await _clientRepository.GetClient(id) == null) return NotFound();
+
+            await _clientRepository.UpdateClient(client);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] Client client)
+        {
+            var addedClient = await _clientRepository.AddClient(client);
+            return CreatedAtAction(nameof(Get), new { id = addedClient.Id }, addedClient);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            if (await _clientRepository.GetClient(id) == null) return NotFound();
+
+            await _clientRepository.DeleteClient(id);
+            return NoContent();
+        }
+
+        [HttpOptions]
+        public async Task<IActionResult> Options()
+        {
+            Response.Headers.Add("Allow", "GET,PUT,POST,DELETE,OPTIONS,HEAD");
+            return Ok();
+        }
+
+        [HttpHead("{id}")]
+        public async Task<IActionResult> Head(Guid id)
+        {
+            if (await _clientRepository.GetClient(id) == null) return NotFound();
+
+            return Ok();
         }
     }
 }
