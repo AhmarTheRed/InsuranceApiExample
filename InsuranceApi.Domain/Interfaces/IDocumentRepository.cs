@@ -8,5 +8,10 @@ namespace InsuranceApi.Domain.Interfaces
     {
         public Task<IEnumerable<Document>> GetDocumentsForPolicy(Guid policyId);
         public Task<IEnumerable<Document>> GetDocumentsForClaim(Guid claimId);
+        public Task<Document> GetDocument(Guid Id);
+        public Task UpdateDocument(Document claim);
+        public Task<Document> AddDocumentToPolicy(Guid policyId, Document claim);
+        public Task<Document> AddDocumentToClaim(Guid claimId, Document claim);
+        public Task DeleteDocument(Guid Id);
     }
 }

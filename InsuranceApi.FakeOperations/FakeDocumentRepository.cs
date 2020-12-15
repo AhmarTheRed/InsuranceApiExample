@@ -8,6 +8,33 @@ namespace InsuranceApi.FakeOperations
 {
     public class FakeDocumentRepository : IDocumentRepository
     {
+        public async Task<Document> AddDocumentToClaim(Guid claimId, Document document)
+        {
+            document.Id = Guid.NewGuid();
+            return document;
+        }
+
+        public async Task<Document> AddDocumentToPolicy(Guid policyId, Document document)
+        {
+            document.Id = Guid.NewGuid();
+            return document;
+        }
+
+        public async Task DeleteDocument(Guid Id)
+        {
+            //beep boop deleted
+        }
+
+        public async Task<Document> GetDocument(Guid Id)
+        {
+            new Document
+            {
+                Id = Id,
+                Title = "Policy Certificate",
+                FileName = "policy.pdf"
+            };
+        }
+
         public async Task<IEnumerable<Document>> GetDocumentsForClaim(Guid claimId)
         {
             return new List<Document>
@@ -50,6 +77,11 @@ namespace InsuranceApi.FakeOperations
                     FileName = "TsandCs.pdf"
                 }
             };
+        }
+
+        public async Task UpdateDocument(Document claim)
+        {
+            //beep boop updated
         }
     }
 }

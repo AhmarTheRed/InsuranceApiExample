@@ -10,6 +10,26 @@ namespace InsuranceApi.FakeOperations
 {
     public class FakeClientRepository : IClientRepository
     {
+        public async Task<Client> AddClient(Client client)
+        {
+            client.Id = Guid.NewGuid();
+            return client;
+        }
+
+        public async Task DeleteClient(Guid Id)
+        {
+            // beep boop deleted
+        }
+
+        public async Task<Client> GetClient(Guid Id)
+        {
+            return new Client
+            {
+                Id = Guid.NewGuid(),
+                Name = "International Rescue"
+            };
+        }
+
         public async Task<IEnumerable<Client>> GetClients()
         {
             return new List<Client>
@@ -30,6 +50,11 @@ namespace InsuranceApi.FakeOperations
                     Name = "Acme Inc"
                 }
             };
+        }
+
+        public async Task UpdateClient(Client client)
+        {
+            // beep boop updated
         }
     }
 }

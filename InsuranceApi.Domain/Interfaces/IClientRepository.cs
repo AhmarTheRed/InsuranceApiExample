@@ -9,5 +9,9 @@ namespace InsuranceApi.Domain.Interfaces
     public interface IClientRepository
     {
         public Task<IEnumerable<Client>> GetClients();
+        public Task<Client> GetClient(Guid Id);
+        public Task UpdateClient(Client client);
+        public Task<Client> AddClient(Client client);
+        public Task DeleteClient(Guid Id);
     }
 }
