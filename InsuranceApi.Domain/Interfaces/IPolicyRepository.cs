@@ -8,10 +8,10 @@ namespace InsuranceApi.Domain.Interfaces
 {
     public interface IPolicyRepository
     {
-        public Task<IEnumerable<Policy>> GetPolicies(Guid clientId);
-        public Task<Policy> GetPolicy(Guid Id);
+        public Task<PaginatedValues<Policy>> GetPolicies(Guid clientId, PaginationParameters pagination = null);
+        public Task<Policy> GetPolicy(Guid id);
         public Task UpdatePolicy(Policy policy);
         public Task<Policy> AddPolicy(Guid clientId, Policy policy);
-        public Task DeletePolicy(Guid Id);
+        public Task DeletePolicy(Guid id);
     }
 }

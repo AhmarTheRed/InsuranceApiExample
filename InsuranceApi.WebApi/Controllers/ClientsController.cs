@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using InsuranceApi.Domain.Interfaces;
 using InsuranceApi.Domain;
+using InsuranceApi.WebApi.DTOs;
 
 namespace InsuranceApi.WebApi.Controllers
 {
@@ -25,9 +23,13 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] ClientQueryFilters filters = null)
         {
-            return Ok(await _clientRepository.GetClients());
+            filters ??= new ClientQueryFilters();
+
+            return !string.IsNullOrEmpty(filters.Name)
+                ? Ok(await _clientRepository.GetClientsByName(filters.Name))
+                : Ok(await _clientRepository.GetClients(filters.q));
         }
 
         [HttpGet("{id}")]

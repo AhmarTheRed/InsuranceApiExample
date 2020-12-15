@@ -26,11 +26,11 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromRoute] Guid clientId)
+        public async Task<IActionResult> Get([FromRoute] Guid clientId, [FromQuery] PaginationParameters pagination)
         {
             if (await _clientRepository.GetClient(clientId) == null) return NotFound();
 
-            return Ok(await _policyRepository.GetPolicies(clientId));
+            return Ok(await _policyRepository.GetPolicies(clientId, pagination));
         }
 
         [HttpGet("{id}")]
@@ -93,6 +93,26 @@ namespace InsuranceApi.WebApi.Controllers
             if (await _policyRepository.GetPolicy(id) == null) return NotFound();
 
             return Ok();
+        }
+
+        private IActionResult PaginatedResult<T>(PaginationParameters paginationParameters, ICollection<T> values)
+        {
+            if (!values.Any()) return Ok(new PaginatedValues<T> { Total = values.Count, Values = values });
+
+            if (paginationParameters.Unpaged)
+            {
+                return Ok(new PaginatedValues<T> { Total = values.Count, Values = values });
+            }
+
+            if (paginationParameters.Offset >= values.Count) return BadRequest();
+
+            var offset = values.Skip(paginationParameters.Offset);
+
+            var paginatedValues = paginationParameters.Limit.HasValue
+                ? offset.Take(paginationParameters.Limit.Value)
+                : offset;
+
+            return Ok(new PaginatedValues<T> { Total = values.Count, Values = paginatedValues });
         }
     }
 }

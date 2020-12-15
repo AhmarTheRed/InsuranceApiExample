@@ -2,6 +2,7 @@
 using InsuranceApi.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace InsuranceApi.FakeOperations
@@ -19,9 +20,14 @@ namespace InsuranceApi.FakeOperations
             //beep boop updated
         }
 
-        public async Task<IEnumerable<Policy>> GetPolicies(Guid clientId)
+        public async Task<PaginatedValues<Policy>> GetPolicies(Guid clientId, PaginationParameters pagination = null)
         {
-            return new List<Policy>
+            pagination ??= new PaginationParameters
+            {
+                Unpaged = true
+            };
+
+            var policies = new List<Policy>
             {
                 new Policy
                 {
@@ -44,6 +50,7 @@ namespace InsuranceApi.FakeOperations
                     Type = "Motor"
                 }
             };
+            return PaginatedResult(pagination, policies);
         }
 
         public async Task<Policy> GetPolicy(Guid Id)
@@ -58,6 +65,25 @@ namespace InsuranceApi.FakeOperations
         public async Task UpdatePolicy(Policy policy)
         {
             //beep boop updated
+        }
+
+
+        protected PaginatedValues<Policy> PaginatedResult(PaginationParameters paginationParameters, ICollection<Policy> values)
+        {
+            if (!values.Any()) return new PaginatedValues<Policy> { Total = values.Count, Values = values };
+
+            if (paginationParameters.Unpaged)
+            {
+                return new PaginatedValues<Policy> { Total = values.Count, Values = values };
+            }
+
+            var offset = values.Skip(paginationParameters.Offset);
+
+            var paginatedValues = paginationParameters.Limit.HasValue
+                ? offset.Take(paginationParameters.Limit.Value)
+                : offset;
+
+            return new PaginatedValues<Policy> { Total = values.Count, Values = paginatedValues };
         }
     }
 }
