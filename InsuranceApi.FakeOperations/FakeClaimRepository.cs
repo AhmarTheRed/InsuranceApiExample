@@ -1,8 +1,8 @@
-﻿using InsuranceApi.Domain;
-using InsuranceApi.Domain.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using InsuranceApi.Domain;
+using InsuranceApi.Domain.Interfaces;
 
 namespace InsuranceApi.FakeOperations
 {

@@ -1,9 +1,9 @@
-﻿using InsuranceApi.Domain;
-using InsuranceApi.Domain.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using InsuranceApi.Domain;
+using InsuranceApi.Domain.Interfaces;
 
 namespace InsuranceApi.FakeOperations
 {
@@ -68,14 +68,13 @@ namespace InsuranceApi.FakeOperations
         }
 
 
-        protected PaginatedValues<Policy> PaginatedResult(PaginationParameters paginationParameters, ICollection<Policy> values)
+        protected PaginatedValues<Policy> PaginatedResult(PaginationParameters paginationParameters,
+            ICollection<Policy> values)
         {
-            if (!values.Any()) return new PaginatedValues<Policy> { Total = values.Count, Values = values };
+            if (!values.Any()) return new PaginatedValues<Policy> {Total = values.Count, Values = values};
 
             if (paginationParameters.Unpaged)
-            {
-                return new PaginatedValues<Policy> { Total = values.Count, Values = values };
-            }
+                return new PaginatedValues<Policy> {Total = values.Count, Values = values};
 
             var offset = values.Skip(paginationParameters.Offset);
 
@@ -83,7 +82,7 @@ namespace InsuranceApi.FakeOperations
                 ? offset.Take(paginationParameters.Limit.Value)
                 : offset;
 
-            return new PaginatedValues<Policy> { Total = values.Count, Values = paginatedValues };
+            return new PaginatedValues<Policy> {Total = values.Count, Values = paginatedValues};
         }
     }
 }

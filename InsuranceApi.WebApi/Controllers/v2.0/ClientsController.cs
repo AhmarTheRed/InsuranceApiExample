@@ -14,8 +14,8 @@ namespace InsuranceApi.WebApi.Controllers.v2._0
 
     public class ClientsController : ControllerBase
     {
-        private readonly ILogger<ClientsController> _logger;
         private readonly IClientRepository _clientRepository;
+        private readonly ILogger<ClientsController> _logger;
 
         public ClientsController(ILogger<ClientsController> logger, IClientRepository clientRepository)
         {
@@ -56,7 +56,7 @@ namespace InsuranceApi.WebApi.Controllers.v2._0
         public async Task<IActionResult> Post([FromBody] Client client)
         {
             var addedClient = await _clientRepository.AddClient(client);
-            return CreatedAtAction(nameof(Get), new { id = addedClient.Id }, addedClient);
+            return CreatedAtAction(nameof(Get), new {id = addedClient.Id}, addedClient);
         }
 
         [HttpDelete("{id}")]
