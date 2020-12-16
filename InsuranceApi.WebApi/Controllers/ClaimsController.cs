@@ -9,8 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace InsuranceApi.WebApi.Controllers
 {
+    [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/clients/{clientId}/policies/{policyId}/claims")]
+    [Route("api/v{version:apiVersion}/clients/{clientId}/policies/{policyId}/claims")]
     public class ClaimsController : ControllerBase
     {
 
