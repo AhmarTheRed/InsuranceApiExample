@@ -1,20 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using InsuranceApi.Domain.Interfaces;
 using InsuranceApi.Domain;
+using InsuranceApi.Domain.Interfaces;
 using InsuranceApi.WebApi.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace InsuranceApi.WebApi.Controllers
 {
     [Route("api/clients")]
     [ApiController]
-    
     public class ClientsController : ControllerBase
     {
-        private readonly ILogger<ClientsController> _logger;
         private readonly IClientRepository _clientRepository;
+        private readonly ILogger<ClientsController> _logger;
 
         public ClientsController(ILogger<ClientsController> logger, IClientRepository clientRepository)
         {
@@ -55,7 +54,7 @@ namespace InsuranceApi.WebApi.Controllers
         public async Task<IActionResult> Post([FromBody] Client client)
         {
             var addedClient = await _clientRepository.AddClient(client);
-            return CreatedAtAction(nameof(Get), new { id = addedClient.Id }, addedClient);
+            return CreatedAtAction(nameof(Get), new {id = addedClient.Id}, addedClient);
         }
 
         [HttpDelete("{id}")]

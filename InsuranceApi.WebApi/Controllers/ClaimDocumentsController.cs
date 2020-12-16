@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using InsuranceApi.Domain;
 using InsuranceApi.Domain.Interfaces;
@@ -13,14 +11,16 @@ namespace InsuranceApi.WebApi.Controllers
     [Route("api/clients/{clientId}/policies/{policyId}/claims/{claimId}/documents")]
     public class ClaimDocumentsController : ControllerBase
     {
+        private readonly IClaimRepository _claimRepository;
+        private readonly IClientRepository _clientRepository;
+        private readonly IDocumentRepository _documentRepository;
 
         private readonly ILogger<PoliciesController> _logger;
-        private readonly IClientRepository _clientRepository;
         private readonly IPolicyRepository _policyRepository;
-        private readonly IDocumentRepository _documentRepository;
-        private readonly IClaimRepository _claimRepository;
 
-        public ClaimDocumentsController(ILogger<PoliciesController> logger, IClientRepository clientRepository, IPolicyRepository policyRepository, IClaimRepository claimRepository, IDocumentRepository documentRepository)
+        public ClaimDocumentsController(ILogger<PoliciesController> logger, IClientRepository clientRepository,
+            IPolicyRepository policyRepository, IClaimRepository claimRepository,
+            IDocumentRepository documentRepository)
         {
             _logger = logger;
             _clientRepository = clientRepository;
@@ -30,18 +30,22 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromRoute] Guid clientId, [FromRoute] Guid policyId, [FromRoute] Guid claimId)
+        public async Task<IActionResult> Get([FromRoute] Guid clientId, [FromRoute] Guid policyId,
+            [FromRoute] Guid claimId)
         {
-            if (await _clientRepository.GetClient(clientId) == null || await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
+            if (await _clientRepository.GetClient(clientId) == null ||
+                await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
                 return NotFound();
 
             return Ok(await _documentRepository.GetDocumentsForClaim(claimId));
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get([FromRoute] Guid clientId, [FromRoute] Guid policyId, [FromRoute] Guid claimId, Guid id)
+        public async Task<IActionResult> Get([FromRoute] Guid clientId, [FromRoute] Guid policyId,
+            [FromRoute] Guid claimId, Guid id)
         {
-            if (await _clientRepository.GetClient(clientId) == null || await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
+            if (await _clientRepository.GetClient(clientId) == null ||
+                await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
                 return NotFound();
 
             var document = await _documentRepository.GetDocument(id);
@@ -52,9 +56,11 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute] Guid clientId, [FromRoute] Guid policyId, [FromRoute] Guid claimId, Guid id, [FromBody] Document document)
+        public async Task<IActionResult> Put([FromRoute] Guid clientId, [FromRoute] Guid policyId,
+            [FromRoute] Guid claimId, Guid id, [FromBody] Document document)
         {
-            if (await _clientRepository.GetClient(clientId) == null || await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
+            if (await _clientRepository.GetClient(clientId) == null ||
+                await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
                 return NotFound();
 
             if (await _documentRepository.GetDocument(id) == null) return NotFound();
@@ -64,19 +70,24 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromRoute] Guid clientId, [FromRoute] Guid policyId, [FromRoute] Guid claimId, [FromBody] Document document)
+        public async Task<IActionResult> Post([FromRoute] Guid clientId, [FromRoute] Guid policyId,
+            [FromRoute] Guid claimId, [FromBody] Document document)
         {
-            if (await _clientRepository.GetClient(clientId) == null || await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
+            if (await _clientRepository.GetClient(clientId) == null ||
+                await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
                 return NotFound();
 
             var addedDocument = await _documentRepository.AddDocumentToClaim(claimId, document);
-            return CreatedAtAction(nameof(Get), new { clientId = clientId, policyId = policyId, claimId = claimId, id = addedDocument.Id }, addedDocument);
+            return CreatedAtAction(nameof(Get), new {clientId, policyId, claimId, id = addedDocument.Id},
+                addedDocument);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid clientId, [FromRoute] Guid policyId, [FromRoute] Guid claimId, Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid clientId, [FromRoute] Guid policyId,
+            [FromRoute] Guid claimId, Guid id)
         {
-            if (await _clientRepository.GetClient(clientId) == null || await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
+            if (await _clientRepository.GetClient(clientId) == null ||
+                await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
                 return NotFound();
 
             if (await _documentRepository.GetDocument(id) == null) return NotFound();
@@ -86,9 +97,11 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpOptions]
-        public async Task<IActionResult> Options([FromRoute] Guid clientId, [FromRoute] Guid policyId, [FromRoute] Guid claimId)
+        public async Task<IActionResult> Options([FromRoute] Guid clientId, [FromRoute] Guid policyId,
+            [FromRoute] Guid claimId)
         {
-            if (await _clientRepository.GetClient(clientId) == null || await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
+            if (await _clientRepository.GetClient(clientId) == null ||
+                await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
                 return NotFound();
 
             Response.Headers.Add("Allow", "GET,PUT,POST,DELETE,OPTIONS,HEAD");
@@ -96,9 +109,11 @@ namespace InsuranceApi.WebApi.Controllers
         }
 
         [HttpHead("{id}")]
-        public async Task<IActionResult> Head([FromRoute] Guid clientId, [FromRoute] Guid policyId, [FromRoute] Guid claimId, Guid id)
+        public async Task<IActionResult> Head([FromRoute] Guid clientId, [FromRoute] Guid policyId,
+            [FromRoute] Guid claimId, Guid id)
         {
-            if (await _clientRepository.GetClient(clientId) == null || await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
+            if (await _clientRepository.GetClient(clientId) == null ||
+                await _policyRepository.GetPolicy(policyId) == null || await _claimRepository.GetClaim(claimId) == null)
                 return NotFound();
 
             if (await _documentRepository.GetDocument(id) == null) return NotFound();

@@ -13,12 +13,13 @@ namespace InsuranceApi.WebApi.Controllers
     [Route("api/clients/{clientId}/policies")]
     public class PoliciesController : ControllerBase
     {
+        private readonly IClientRepository _clientRepository;
 
         private readonly ILogger<PoliciesController> _logger;
-        private readonly IClientRepository _clientRepository;
         private readonly IPolicyRepository _policyRepository;
 
-        public PoliciesController(ILogger<PoliciesController> logger, IClientRepository clientRepository, IPolicyRepository policyRepository)
+        public PoliciesController(ILogger<PoliciesController> logger, IClientRepository clientRepository,
+            IPolicyRepository policyRepository)
         {
             _logger = logger;
             _clientRepository = clientRepository;
@@ -62,7 +63,7 @@ namespace InsuranceApi.WebApi.Controllers
             if (await _clientRepository.GetClient(clientId) == null) return NotFound();
 
             var addedPolicy = await _policyRepository.AddPolicy(clientId, policy);
-            return CreatedAtAction(nameof(Get), new { clientId = clientId, id = addedPolicy.Id }, addedPolicy);
+            return CreatedAtAction(nameof(Get), new {clientId, id = addedPolicy.Id}, addedPolicy);
         }
 
         [HttpDelete("{id}")]
@@ -97,12 +98,9 @@ namespace InsuranceApi.WebApi.Controllers
 
         private IActionResult PaginatedResult<T>(PaginationParameters paginationParameters, ICollection<T> values)
         {
-            if (!values.Any()) return Ok(new PaginatedValues<T> { Total = values.Count, Values = values });
+            if (!values.Any()) return Ok(new PaginatedValues<T> {Total = values.Count, Values = values});
 
-            if (paginationParameters.Unpaged)
-            {
-                return Ok(new PaginatedValues<T> { Total = values.Count, Values = values });
-            }
+            if (paginationParameters.Unpaged) return Ok(new PaginatedValues<T> {Total = values.Count, Values = values});
 
             if (paginationParameters.Offset >= values.Count) return BadRequest();
 
@@ -112,7 +110,7 @@ namespace InsuranceApi.WebApi.Controllers
                 ? offset.Take(paginationParameters.Limit.Value)
                 : offset;
 
-            return Ok(new PaginatedValues<T> { Total = values.Count, Values = paginatedValues });
+            return Ok(new PaginatedValues<T> {Total = values.Count, Values = paginatedValues});
         }
     }
 }
