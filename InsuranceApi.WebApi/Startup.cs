@@ -4,10 +4,11 @@ using InsuranceApi.FakeOperations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace InsuranceApi.WebApi
@@ -32,30 +33,14 @@ namespace InsuranceApi.WebApi
                     o.DefaultApiVersion = new ApiVersion(1, 0);
                     o.AssumeDefaultVersionWhenUnspecified = true;
                     o.ReportApiVersions = true;
-                });
-            services.AddSwaggerGen(c =>
+                })
+                .AddVersionedApiExplorer(options =>
                 {
-                    c.SwaggerDoc("v1.0", new OpenApiInfo {Title = "InsuranceApi.WebApi", Version = "v1.0"});
-                    c.SwaggerDoc("v2.0", new OpenApiInfo {Title = "InsuranceApi.WebApi", Version = "v2.0"});
-                    c.OperationFilter<RemoveVersionFromParameter>();
-                    c.DocumentFilter<ReplaceVersionWithExactValueInPath>();
-
-                    c.DocInclusionPredicate((version, desc) =>
-                    {
-                        var versions = desc.CustomAttributes()
-                            .OfType<ApiVersionAttribute>()
-                            .SelectMany(attr => attr.Versions);
-
-                        var maps = desc.CustomAttributes()
-                            .OfType<MapToApiVersionAttribute>()
-                            .SelectMany(attr => attr.Versions)
-                            .ToArray();
-
-                        return versions.Any(v => $"v{v.ToString()}" == version)
-                               && (!maps.Any() || maps.Any(v => $"v{v.ToString()}" == version));
-                    });
-                }
-            );
+                    options.GroupNameFormat = "'v'VVV";
+                    options.SubstituteApiVersionInUrl = true;
+                });
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+            services.AddSwaggerGen();
 
             services
                 .AddTransient<IClientRepository, FakeClientRepository>()
@@ -65,7 +50,7 @@ namespace InsuranceApi.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)//, IApiVersionDescriptionProvider provider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -86,8 +71,14 @@ namespace InsuranceApi.WebApi
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "v1.0");
-                c.SwaggerEndpoint("/swagger/v2.0/swagger.json", "v2.0");
+                foreach (var apiVersion in provider.ApiVersionDescriptions
+                    .OrderBy(version => version.ToString()))
+                {
+                    c.SwaggerEndpoint(
+                        $"/swagger/{apiVersion.GroupName}/swagger.json",
+                        $"{apiVersion.GroupName}"
+                    );
+                }
             });
         }
     }
