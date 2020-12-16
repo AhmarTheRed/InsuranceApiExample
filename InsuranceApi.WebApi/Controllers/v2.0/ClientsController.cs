@@ -2,22 +2,22 @@
 using System.Threading.Tasks;
 using InsuranceApi.Domain;
 using InsuranceApi.Domain.Interfaces;
-using InsuranceApi.WebApi.Controllers.v2._0;
 using InsuranceApi.WebApi.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace InsuranceApi.WebApi.Controllers.v1._0
+namespace InsuranceApi.WebApi.Controllers.v2._0
 {
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/clients")]
-    public class ClientsV1Controller : ControllerBase
+
+    public class ClientsController : ControllerBase
     {
-        private readonly ILogger<ClientsV2Controller> _logger;
+        private readonly ILogger<ClientsController> _logger;
         private readonly IClientRepository _clientRepository;
 
-        public ClientsV1Controller(ILogger<ClientsV2Controller> logger, IClientRepository clientRepository)
+        public ClientsController(ILogger<ClientsController> logger, IClientRepository clientRepository)
         {
             _logger = logger;
             _clientRepository = clientRepository;
